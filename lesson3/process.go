@@ -25,6 +25,22 @@ type dirFiles struct {
 	wg         sync.WaitGroup
 }
 
+type processDir interface {
+	scanDir() error
+	walkDir() error
+}
+
+type processFiles interface {
+	findDuplicates() error
+	deleteDuplicates(context.Context) error
+	copyOriginals(context.Context) error
+}
+
+type processAll interface {
+	processDir
+	processFiles
+}
+
 func (df *dirFiles) scanDir() error {
 	fmt.Println("Please, Enter directory to scan for duplicate files.")
 

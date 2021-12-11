@@ -10,8 +10,7 @@ import (
 )
 
 func main() {
-	var df dirFiles
-
+	var df processAll = &dirFiles{}
 	flag.Parse()
 
 	if *logFlag {
@@ -31,7 +30,7 @@ func main() {
 
 	err := df.scanDir()
 	for err != nil {
-		log.WithError(err).Warnf(`The directory "%s" doesn't exist, please, try again.`, df.dir)
+		log.WithError(err).Warn(`The directory "%s" doesn't exist, please, try again.`)
 		//log.Printf(`The directory "%s" doesn't exist, please, try again.`, df.dir)
 		err = df.scanDir()
 	}
