@@ -30,7 +30,7 @@ func main() {
 
 	err := df.scanDir()
 	for err != nil {
-		log.WithError(err).Warn(`The directory "%s" doesn't exist, please, try again.`)
+		log.WithError(err).Warn(`The directory doesn't exist, please, try again.`)
 		//log.Printf(`The directory "%s" doesn't exist, please, try again.`, df.dir)
 		err = df.scanDir()
 	}
