@@ -1,0 +1,11 @@
+{"level":"info","msg":"Program Started.","time":"2021-12-09T17:51:47+03:00"}
+{"error":"chdir sdf: no such file or directory","level":"warning","msg":"The directory \"sdf\" doesn't exist, please, try again.","time":"2021-12-09T17:51:49+03:00"}
+{"error":"chdir sdf: no such file or directory","level":"warning","msg":"The directory \"sdf\" doesn't exist, please, try again.","time":"2021-12-09T17:51:49+03:00"}
+{"level":"info","msg":"Your directory is/home/deus/Desktop/GolangBestPractices/lesson3/testDir/","time":"2021-12-09T17:51:56+03:00"}
+{"level":"info","msg":"File \"/home/deus/Desktop/GolangBestPractices/lesson3/testDir/file1\" has duplicates","time":"2021-12-09T17:51:56+03:00"}
+{"level":"info","msg":"File \"/home/deus/Desktop/GolangBestPractices/lesson3/testDir/file2\" has duplicates","time":"2021-12-09T17:51:56+03:00"}
+{"level":"info","msg":"Duplicate files: [/home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir1/file1 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir1/testDir3/file1 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir2/testDir4/file1 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir2/file1 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir2/testDir4/file2 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir1/testDir3/file2 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir2/file2 /home/deus/Desktop/GolangBestPractices/lesson3/testDir/testDir1/file2]","time":"2021-12-09T17:51:56+03:00"}
+{"error":"Error: Wrong input by user.","level":"warning","msg":"Please, answer \"y\" or \"n\".","time":"2021-12-09T17:51:58+03:00"}
+{"level":"info","msg":"All duplicate files remain.","time":"2021-12-09T17:52:00+03:00"}
+{"error":"Error: Wrong input by user.","level":"warning","msg":"Please, answer \"y\" or \"n\".","time":"2021-12-09T17:52:01+03:00"}
+{"level":"info","msg":"Program exited at user request.","time":"2021-12-09T17:52:02+03:00"}
