@@ -40,10 +40,10 @@ type osFS struct{}
 
 func (osFS) Open(name string) (file, error)              { return os.Open(name) }
 func (osFS) Stat(name string) (os.FileInfo, error)       { return os.Stat(name) }
-func (osFS) Remove(name string) error                    { return nil }
-func (osFS) Rename(oldPath string, newPath string) error { return nil }
+func (osFS) Remove(name string) error                    { return os.Remove(name) }
+func (osFS) Rename(oldPath string, newPath string) error { return os.Rename(oldPath, newPath) }
 func (osFS) Mkdir(name string) error                     { return nil }
-func (osFS) Chdir(dir string) error                      { return nil }
+func (osFS) Chdir(dir string) error                      { return os.Chdir(dir) }
 
 type mockedFS struct {
 	osFS
