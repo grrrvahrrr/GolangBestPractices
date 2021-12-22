@@ -10,7 +10,6 @@ func main() {
 	//Set up timeout (from config)
 	//All requests write to access.log, all errors to error.log
 	//Write tests with mocks
-	//golangci lint
 	//make files
 
 	var r process.UserRequest
