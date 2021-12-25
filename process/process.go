@@ -32,10 +32,11 @@ type UserRequest struct {
 	SearchValue     []string
 }
 
-func (r UserRequest) ReadFile() {
+func (r UserRequest) ReadFile() error {
 	file, err := os.Open(r.FileName)
 	if err != nil {
 		log.WithError(err).Error("Error openning file")
+		return err
 	}
 	defer file.Close()
 
@@ -51,6 +52,7 @@ func (r UserRequest) ReadFile() {
 		}
 		if err != nil {
 			log.WithError(err).Error("Error reading CSV")
+			return err
 		}
 		//Creating indexes for columns and search parameters
 		if header {
@@ -122,5 +124,5 @@ func (r UserRequest) ReadFile() {
 		}
 
 	}
-
+	return nil
 }

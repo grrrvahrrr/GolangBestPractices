@@ -44,8 +44,8 @@ linters-settings:
   goconst:
     # goconst находит строки не меньше 2 символов, которые встречаются хотя бы 2 раза
     min-len: 2
-    min-occurrences: 2    
+    min-occurrences: 2
   funlen:
     # функция помечается длинной если она больше 100 строк кода либо больше 50 операций
-    lines: 100
-    statements: 50 
+    lines: 1000
+    statements: 500

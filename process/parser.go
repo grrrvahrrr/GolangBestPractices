@@ -5,100 +5,82 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
-func (r *UserRequest) GetRequest() {
+const and string = "AND"
+
+func (r *UserRequest) GetRequest() error {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("Please, Enter an SQL request: SELECT *column_name* FROM *file_name* WHERE *search_parameter* AND *search_parameter*.\nSearch parameters are optional.")
 
 	var err error
+
 	r.RequestBody, err = reader.ReadString('\n')
 	if err != nil {
-		log.Error(err)
+		return err
 	}
+	//Add logging for r.Request body to access.log
+	//Add check of r.RequestBody for SELECT, FROM return error of incorrect syntax and log it in main
+	return nil
 }
 
-func (r *UserRequest) ParseRequest() {
+func (r *UserRequest) ParseRequest() error {
 	r.ColumnName = strings.Split(between(r.RequestBody, "SELECT", "FROM"), ",")
 	for i := range r.ColumnName {
 		r.ColumnName[i] = strings.TrimSpace(r.ColumnName[i])
 	}
-	bodySlice := strings.Fields(r.RequestBody)
-	for _, v := range bodySlice {
-		if v == "WHERE" {
-			r.FileName = strings.TrimSpace(between(r.RequestBody, "FROM", "WHERE"))
 
-			//Parse Search parameters
-			r.SearchBody = strings.Fields(after(r.RequestBody, "WHERE"))
+	if strings.Contains(r.RequestBody, "WHERE") {
+		r.FileName = strings.TrimSpace(between(r.RequestBody, "FROM", "WHERE"))
+		if r.FileName == "" {
+			//Make custom error
+			err := fmt.Errorf("no file name")
+			return err
+		}
 
-			r.SearchParamName = append(r.SearchParamName, r.SearchBody[0])
-			for i, v := range r.SearchBody {
-				if v == "AND" {
-					r.SearchParamName = append(r.SearchParamName, r.SearchBody[i+1])
-				}
+		//Parse Search parameters
+		r.SearchBody = strings.Fields(after(r.RequestBody, "WHERE"))
+
+		r.SearchParamName = append(r.SearchParamName, r.SearchBody[0])
+		for i, v := range r.SearchBody {
+			if v == and {
+				r.SearchParamName = append(r.SearchParamName, r.SearchBody[i+1])
 			}
+		}
 
-			r.SearchParam = append(r.SearchParam, r.SearchBody[1])
-			for i, v := range r.SearchBody {
-				if v == "AND" {
-					r.SearchParam = append(r.SearchParam, r.SearchBody[i+2])
-				}
+		r.SearchParam = append(r.SearchParam, r.SearchBody[1])
+		for i, v := range r.SearchBody {
+			if v == and {
+				r.SearchParam = append(r.SearchParam, r.SearchBody[i+2])
 			}
+		}
 
-			// r.SearchValue = append(r.SearchValue, r.SearchBody[2])
-			// for i, v := range r.SearchBody {
-			// 	if v == "AND" {
-			// 		r.SearchValue = append(r.SearchValue, r.SearchBody[i+3])
-			// 	}
-			// }
+		//Parse Single word Seach value
+		// r.SearchValue = append(r.SearchValue, r.SearchBody[2])
+		// for i, v := range r.SearchBody {
+		// 	if v == "AND" {
+		// 		r.SearchValue = append(r.SearchValue, r.SearchBody[i+3])
+		// 	}
+		// }
 
-			//Parse Search value
-			if strings.Contains(strings.Join(r.SearchBody, " "), "AND") {
+		//Parse multiword search value
+		var err error
+		r.SearchValue, err = parseSearchValue(r.SearchBody, r.SearchParam)
+		if err != nil {
+			return err
+		}
 
-				var paramCounter int = 0
-				for _, v := range r.SearchBody {
-					if v == "AND" {
-						paramCounter++
-					}
-				}
-				for i := 0; i <= paramCounter; i++ {
-					var newParam bool
-					if strings.Contains(strings.Join(r.SearchBody, " "), "AND") {
-						string := strings.TrimSpace(between(strings.Join(r.SearchBody, " "), r.SearchParam[i], "AND"))
-						r.SearchValue = append(r.SearchValue, string)
-						for j := range r.SearchBody {
-							if j < len(r.SearchBody)-1 && !newParam && r.SearchBody[j] == "AND" {
-								r.SearchBody = r.SearchBody[j+1 : len(r.SearchBody)]
-								newParam = true
-							}
-						}
-					} else {
-						string := strings.TrimSpace(after(strings.Join(r.SearchBody, " "), r.SearchParam[i]))
-						r.SearchValue = append(r.SearchValue, string)
-					}
-				}
-			} else {
-				string := strings.TrimSpace(after(strings.Join(r.SearchBody, " "), r.SearchParam[0]))
-				r.SearchValue = append(r.SearchValue, string)
-			}
-			break
-
-		} else {
-			r.FileName = strings.TrimSpace(after(r.RequestBody, "FROM"))
+	} else {
+		r.FileName = strings.TrimSpace(after(r.RequestBody, "FROM"))
+		if r.FileName == "" {
+			//Make custom error
+			err := fmt.Errorf("no file name")
+			return err
 		}
 	}
-	// log.Info(r.RequestBody)
-	// log.Info(r.FileName)
-	// log.Info(r.ColumnName)
-	// log.Info(len(r.ColumnName))
-	// log.Info(r.SearchBody)
-	// log.Info(r.SearchParamName)
-	// log.Info(r.SearchParam)
-	// log.Info(r.SearchValue)
 
+	return nil
 }
 
 func between(value string, a string, b string) string {
@@ -128,5 +110,43 @@ func after(value string, a string) string {
 	if adjustedPos >= len(value) {
 		return ""
 	}
-	return value[adjustedPos:len(value)]
+	return value[adjustedPos:]
+}
+
+func parseSearchValue(searchBody []string, searchParam []string) ([]string, error) {
+	var searchValue []string
+	if strings.Contains(strings.Join(searchBody, " "), and) {
+
+		var paramCounter int = 0
+		for _, v := range searchBody {
+			if v == and {
+				paramCounter++
+			}
+		}
+		for i := 0; i <= paramCounter; i++ {
+			var newParam bool
+			if strings.Contains(strings.Join(searchBody, " "), and) {
+				string := strings.TrimSpace(between(strings.Join(searchBody, " "), searchParam[i], and))
+				searchValue = append(searchValue, string)
+				for j := range searchBody {
+					if j < len(searchBody)-1 && !newParam && searchBody[j] == and {
+						searchBody = searchBody[j+1:]
+						newParam = true
+					}
+				}
+			} else {
+				string := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[i]))
+				searchValue = append(searchValue, string)
+			}
+		}
+	} else {
+		string := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[0]))
+		searchValue = append(searchValue, string)
+	}
+	if searchValue == nil {
+		//Make custom error
+		err := fmt.Errorf("no search values")
+		return nil, err
+	}
+	return searchValue, nil
 }
