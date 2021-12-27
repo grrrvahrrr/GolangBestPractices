@@ -1,6 +1,7 @@
 package process
 
 import (
+	"context"
 	"encoding/csv"
 	"io"
 	"os"
@@ -13,17 +14,10 @@ type ProcessFile interface {
 }
 
 type ProcessRequest interface {
-	GetReqest() error
 	ParseRequest() error
 }
 
-type ProcessAll interface {
-	ProcessFile
-	ProcessRequest
-}
-
-type UserRequest struct {
-	RequestBody     string
+type Request struct {
 	FileName        string
 	ColumnName      []string
 	SearchBody      []string
@@ -32,7 +26,7 @@ type UserRequest struct {
 	SearchValue     []string
 }
 
-func (r UserRequest) ReadFile() error {
+func (r Request) ReadFile(ctx context.Context) error {
 	file, err := os.Open(r.FileName)
 	if err != nil {
 		log.WithError(err).Error("Error openning file")

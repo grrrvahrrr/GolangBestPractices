@@ -9,30 +9,28 @@ import (
 
 const and string = "AND"
 
-func (r *UserRequest) GetRequest() error {
+func GetRequest() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("Please, Enter an SQL request: SELECT *column_name* FROM *file_name* WHERE *search_parameter* AND *search_parameter*.\nSearch parameters are optional.")
 
-	var err error
-
-	r.RequestBody, err = reader.ReadString('\n')
+	request, err := reader.ReadString('\n')
 	if err != nil {
-		return err
+		return "", err
 	}
 	//Add logging for r.Request body to access.log
 	//Add check of r.RequestBody for SELECT, FROM return error of incorrect syntax and log it in main
-	return nil
+	return request, nil
 }
 
-func (r *UserRequest) ParseRequest() error {
-	r.ColumnName = strings.Split(between(r.RequestBody, "SELECT", "FROM"), ",")
+func (r *Request) ParseRequest(request string) error {
+	r.ColumnName = strings.Split(between(request, "SELECT", "FROM"), ",")
 	for i := range r.ColumnName {
 		r.ColumnName[i] = strings.TrimSpace(r.ColumnName[i])
 	}
 
-	if strings.Contains(r.RequestBody, "WHERE") {
-		r.FileName = strings.TrimSpace(between(r.RequestBody, "FROM", "WHERE"))
+	if strings.Contains(request, "WHERE") {
+		r.FileName = strings.TrimSpace(between(request, "FROM", "WHERE"))
 		if r.FileName == "" {
 			//Make custom error
 			err := fmt.Errorf("no file name")
@@ -40,7 +38,7 @@ func (r *UserRequest) ParseRequest() error {
 		}
 
 		//Parse Search parameters
-		r.SearchBody = strings.Fields(after(r.RequestBody, "WHERE"))
+		r.SearchBody = strings.Fields(after(request, "WHERE"))
 
 		r.SearchParamName = append(r.SearchParamName, r.SearchBody[0])
 		for i, v := range r.SearchBody {
@@ -72,7 +70,7 @@ func (r *UserRequest) ParseRequest() error {
 		}
 
 	} else {
-		r.FileName = strings.TrimSpace(after(r.RequestBody, "FROM"))
+		r.FileName = strings.TrimSpace(after(request, "FROM"))
 		if r.FileName == "" {
 			//Make custom error
 			err := fmt.Errorf("no file name")
