@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = Hong Kong AND Confirmed > 10000 AND Deaths < 500 AND Recovered > 5000
+	//SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
 	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Confirmed > 10000 AND Deaths < 500 AND Recovered > 5000
 	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv
 	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Confirmed > 10000
@@ -35,7 +35,8 @@ func main() {
 		log.Error(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
 
 	chSig := make(chan os.Signal, 10)
 	signal.Notify(chSig, syscall.SIGTERM, syscall.SIGINT)
@@ -49,15 +50,8 @@ func main() {
 				cancel()
 			case syscall.SIGINT:
 				log.Info("Signal SIGINT caught\n")
-				os.Exit(1)
+				cancel()
 			}
-		}
-	}()
-
-	go func() {
-		if <-ctx.Done() == struct{}{} {
-			log.Info(ctx.Err())
-			os.Exit(1)
 		}
 	}()
 

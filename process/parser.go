@@ -12,7 +12,7 @@ const and string = "AND"
 func GetRequest() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Println("Please, Enter an SQL request: SELECT *column_name* FROM *file_name* WHERE *search_parameter* AND *search_parameter*.\nSearch parameters are optional.")
+	fmt.Fprintln(os.Stdout, "Please, Enter an SQL request: SELECT *column_name* FROM *file_name* WHERE *search_parameter* AND *search_parameter*.\nSearch parameters are optional. Press Enter to confirm.")
 
 	request, err := reader.ReadString('\n')
 	if err != nil {
@@ -24,13 +24,17 @@ func GetRequest() (string, error) {
 }
 
 func (r *Request) ParseRequest(request string) error {
-	r.ColumnName = strings.Split(between(request, "SELECT", "FROM"), ",")
+	const from string = "FROM"
+	const where string = "WHERE"
+	const sel string = "SELECT"
+
+	r.ColumnName = strings.Split(between(request, sel, from), ",")
 	for i := range r.ColumnName {
 		r.ColumnName[i] = strings.TrimSpace(r.ColumnName[i])
 	}
 
-	if strings.Contains(request, "WHERE") {
-		r.FileName = strings.TrimSpace(between(request, "FROM", "WHERE"))
+	if strings.Contains(request, where) {
+		r.FileName = strings.TrimSpace(between(request, from, where))
 		if r.FileName == "" {
 			//Make custom error
 			err := fmt.Errorf("no file name")
@@ -38,7 +42,7 @@ func (r *Request) ParseRequest(request string) error {
 		}
 
 		//Parse Search parameters
-		r.SearchBody = strings.Fields(after(request, "WHERE"))
+		r.SearchBody = strings.Fields(after(request, where))
 
 		r.SearchParamName = append(r.SearchParamName, r.SearchBody[0])
 		for i, v := range r.SearchBody {
@@ -70,7 +74,7 @@ func (r *Request) ParseRequest(request string) error {
 		}
 
 	} else {
-		r.FileName = strings.TrimSpace(after(request, "FROM"))
+		r.FileName = strings.TrimSpace(after(request, from))
 		if r.FileName == "" {
 			//Make custom error
 			err := fmt.Errorf("no file name")
