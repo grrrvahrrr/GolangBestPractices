@@ -1,33 +1,17 @@
 package process
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 )
 
 const and string = "AND"
+const from string = "FROM"
+const where string = "WHERE"
+const sel string = "SELECT"
 
-func GetRequest() (string, error) {
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Fprintln(os.Stdout, "Please, Enter an SQL request: SELECT *column_name* FROM *file_name* WHERE *search_parameter* AND *search_parameter*.\nSearch parameters are optional. Press Enter to confirm.")
-
-	request, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
-	}
-	//Add logging for r.Request body to access.log
-	//Add check of r.RequestBody for SELECT, FROM return error of incorrect syntax and log it in main
-	return request, nil
-}
-
-func (r *Request) ParseRequest(request string) error {
-	const from string = "FROM"
-	const where string = "WHERE"
-	const sel string = "SELECT"
-
+func (r *Request) ParseRequest(request string, defaultFile string) error {
+	const def string = "default"
 	r.ColumnName = strings.Split(between(request, sel, from), ",")
 	for i := range r.ColumnName {
 		r.ColumnName[i] = strings.TrimSpace(r.ColumnName[i])
@@ -36,11 +20,12 @@ func (r *Request) ParseRequest(request string) error {
 	if strings.Contains(request, where) {
 		r.FileName = strings.TrimSpace(between(request, from, where))
 		if r.FileName == "" {
-			//Make custom error
 			err := fmt.Errorf("no file name")
 			return err
 		}
-
+		if r.FileName == def {
+			r.FileName = defaultFile
+		}
 		//Parse Search parameters
 		r.SearchBody = strings.Fields(after(request, where))
 
@@ -50,14 +35,12 @@ func (r *Request) ParseRequest(request string) error {
 				r.SearchParamName = append(r.SearchParamName, r.SearchBody[i+1])
 			}
 		}
-
 		r.SearchParam = append(r.SearchParam, r.SearchBody[1])
 		for i, v := range r.SearchBody {
 			if v == and {
 				r.SearchParam = append(r.SearchParam, r.SearchBody[i+2])
 			}
 		}
-
 		//Parse Single word Seach value
 		// r.SearchValue = append(r.SearchValue, r.SearchBody[2])
 		// for i, v := range r.SearchBody {
@@ -65,20 +48,20 @@ func (r *Request) ParseRequest(request string) error {
 		// 		r.SearchValue = append(r.SearchValue, r.SearchBody[i+3])
 		// 	}
 		// }
-
 		//Parse multiword search value
 		var err error
 		r.SearchValue, err = parseSearchValue(r.SearchBody, r.SearchParam)
 		if err != nil {
 			return err
 		}
-
 	} else {
 		r.FileName = strings.TrimSpace(after(request, from))
 		if r.FileName == "" {
-			//Make custom error
 			err := fmt.Errorf("no file name")
 			return err
+		}
+		if r.FileName == def {
+			r.FileName = defaultFile
 		}
 	}
 
@@ -128,8 +111,8 @@ func parseSearchValue(searchBody []string, searchParam []string) ([]string, erro
 		for i := 0; i <= paramCounter; i++ {
 			var newParam bool
 			if strings.Contains(strings.Join(searchBody, " "), and) {
-				string := strings.TrimSpace(between(strings.Join(searchBody, " "), searchParam[i], and))
-				searchValue = append(searchValue, string)
+				str := strings.TrimSpace(between(strings.Join(searchBody, " "), searchParam[i], and))
+				searchValue = append(searchValue, str)
 				for j := range searchBody {
 					if j < len(searchBody)-1 && !newParam && searchBody[j] == and {
 						searchBody = searchBody[j+1:]
@@ -137,16 +120,15 @@ func parseSearchValue(searchBody []string, searchParam []string) ([]string, erro
 					}
 				}
 			} else {
-				string := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[i]))
-				searchValue = append(searchValue, string)
+				str := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[i]))
+				searchValue = append(searchValue, str)
 			}
 		}
 	} else {
-		string := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[0]))
-		searchValue = append(searchValue, string)
+		str := strings.TrimSpace(after(strings.Join(searchBody, " "), searchParam[0]))
+		searchValue = append(searchValue, str)
 	}
 	if searchValue == nil {
-		//Make custom error
 		err := fmt.Errorf("no search values")
 		return nil, err
 	}

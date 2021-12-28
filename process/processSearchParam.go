@@ -3,61 +3,65 @@ package process
 import (
 	"strconv"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
-func processSearchParam(searchParam string, indexParam []int, rec []string, v int, i int, searchValue []string) string {
+func processSearchParam(searchParam string, indexParam []int, rec []string, v int, i int, searchValue []string) (string, error) {
 	const equal string = "="
 	const notEqual string = "!="
-	if strings.Contains(searchValue[i], `"`) || searchValue[i] == "true" || searchValue[i] == "false" {
+	const more string = ">"
+	const moreEqual string = ">="
+	const less string = "<"
+	const lessEqual string = "<="
+	const per string = `"`
+
+	if strings.Contains(searchValue[i], per) || searchValue[i] == "true" || searchValue[i] == "false" {
 		switch searchParam {
 		case equal:
-			if strings.Trim(rec[v], `"`) == strings.Trim(searchValue[i], `"`) {
-				return rec[indexParam[i]]
+			if strings.Trim(rec[v], per) == strings.Trim(searchValue[i], per) {
+				return rec[indexParam[i]], nil
 			}
 		case notEqual:
-			if strings.Trim(rec[v], `"`) != strings.Trim(searchValue[i], `"`) {
-				return rec[indexParam[i]]
+			if strings.Trim(rec[v], per) != strings.Trim(searchValue[i], per) {
+				return rec[indexParam[i]], nil
 			}
 		}
 
 	} else {
 		recValue, err := strconv.ParseFloat(rec[v], 64)
 		if err != nil {
-			log.WithError(err).Debug("value wasn't a float")
+			return "", err
 		}
 		value, err := strconv.ParseFloat(searchValue[i], 64)
 		if err != nil {
-			log.WithError(err).Debug("value wasn't a float")
+			return "", err
 		}
 
 		switch searchParam {
-		case ">":
+		case more:
 			if recValue > value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
-		case ">=":
+		case moreEqual:
 			if recValue >= value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
-		case "<":
+		case less:
 			if recValue < value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
-		case "<=":
+		case lessEqual:
 			if recValue <= value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
 		case equal:
 			if recValue == value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
 		case notEqual:
 			if recValue != value {
-				return rec[indexParam[i]]
+				return rec[indexParam[i]], nil
 			}
 		}
 	}
-	return ""
+	return "", nil
 }

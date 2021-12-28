@@ -1,0 +1,21 @@
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T10:44:18+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T10:56:24+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T10:58:13+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T10:58:43+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T11:18:52+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T11:42:22+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T11:49:06+03:00"}
+{"level":"error","msg":"invalid syntax","time":"2021-12-28T11:51:10+03:00"}
+{"error":"strconv.ParseFloat: parsing \"Confirmed\": invalid syntax","level":"error","msg":"value wasn't a float","time":"2021-12-28T11:52:11+03:00"}
+{"level":"error","msg":"invalid syntax","time":"2021-12-28T11:52:11+03:00"}
+{"error":"strconv.ParseFloat: parsing \"Confirmed\": invalid syntax","level":"error","msg":"value wasn't a float","time":"2021-12-28T11:53:10+03:00"}
+{"error":"strconv.ParseFloat: parsing \"Deaths\": invalid syntax","level":"error","msg":"value wasn't a float","time":"2021-12-28T11:53:10+03:00"}
+{"error":"strconv.ParseFloat: parsing \"Recovered\": invalid syntax","level":"error","msg":"value wasn't a float","time":"2021-12-28T11:53:10+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T11:53:12+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T11:58:00+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T12:00:06+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2021-12-28T14:51:03+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2021-12-28T14:51:03+03:00"}
+{"level":"error","msg":"no such file or directory","time":"2021-12-28T14:51:03+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T15:26:51+03:00"}
+{"level":"info","msg":"context deadline exceeded","time":"2021-12-28T15:29:12+03:00"}
