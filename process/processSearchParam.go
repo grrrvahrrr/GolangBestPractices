@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func processSearchParam(searchParam string, indexParam []int, rec []string, v int, i int, searchValue []string) (string, error) {
+func processSearchParam(searchParam string, indexParam []int, rec []string, i int, searchValue []string) (string, error) {
 	const equal string = "="
 	const notEqual string = "!="
 	const more string = ">"
@@ -17,17 +17,17 @@ func processSearchParam(searchParam string, indexParam []int, rec []string, v in
 	if strings.Contains(searchValue[i], per) || searchValue[i] == "true" || searchValue[i] == "false" {
 		switch searchParam {
 		case equal:
-			if strings.Trim(rec[v], per) == strings.Trim(searchValue[i], per) {
+			if strings.Trim(rec[indexParam[i]], per) == strings.Trim(searchValue[i], per) {
 				return rec[indexParam[i]], nil
 			}
 		case notEqual:
-			if strings.Trim(rec[v], per) != strings.Trim(searchValue[i], per) {
+			if strings.Trim(rec[indexParam[i]], per) != strings.Trim(searchValue[i], per) {
 				return rec[indexParam[i]], nil
 			}
 		}
 
 	} else {
-		recValue, err := strconv.ParseFloat(rec[v], 64)
+		recValue, err := strconv.ParseFloat(rec[indexParam[i]], 64)
 		if err != nil {
 			return "", err
 		}

@@ -1,4 +1,4 @@
-package process
+package request
 
 import (
 	"bufio"
@@ -21,27 +21,30 @@ func GetRequest(defaultFile string) (string, error) {
 		return "", err
 	}
 
-	if !strings.Contains(request, sel) && !strings.Contains(request, from) {
+	if !strings.Contains(request, "SELECT") && !strings.Contains(request, "FROM") {
 		err = fmt.Errorf("wrong syntax of user request")
 		return "", err
 	}
 
+	return request, nil
+}
+
+func LogRequest(request string) error {
 	f, err := os.OpenFile("logs/access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
 	_, err = w.WriteString(time.Now().Format("2006-01-02 15:04:05") + " " + request)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	err = w.Flush()
 	if err != nil {
-		return "", err
+		return err
 	}
-
-	return request, nil
+	return nil
 }

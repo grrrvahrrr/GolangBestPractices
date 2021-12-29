@@ -1,5 +1,5 @@
 GIT_COMMIT=$(shell git rev-list -1 HEAD)
-LDFLAGS=-ldflags "-X CourseWork/process.GitCommit=${GIT_COMMIT}"
+LDFLAGS=-ldflags "-X CourseWork/request.GitCommit=${GIT_COMMIT}"
 
 .PHONY: lint
 lint:

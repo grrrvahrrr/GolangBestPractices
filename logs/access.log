@@ -9,3 +9,10 @@
 2021-12-28 12:00:04 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
 2021-12-28 15:26:49 SELECT SNo, Province/State FROM default WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
 2021-12-28 15:29:10 SELECT SNo, Province/State FROM default WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 09:59:00 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 12:20:33 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 12:22:53 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 14:23:44 SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Confirmed > 10000
+2021-12-29 14:50:59 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 15:37:37 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
+2021-12-29 15:46:34 SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20

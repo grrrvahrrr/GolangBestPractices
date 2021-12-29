@@ -3,6 +3,7 @@ package main
 import (
 	"CourseWork/config"
 	"CourseWork/process"
+	"CourseWork/request"
 	"context"
 	"errors"
 	"os"
@@ -16,14 +17,9 @@ import (
 
 func main() {
 	//SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
-	//SELECT SNo, Country/Region FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Confirmed > 10000 AND Deaths < 500 AND Recovered > 5000
-	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv
-	//SELECT SNo FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Confirmed > 10000
-	//SELECT SNo, Province/State FROM default WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
-
-	//Write tests with mocks
 
 	//parse seach parameter name that has several words in it
+	//solve parsing problem with SELECT FROM WHERE in parameter names
 
 	//Logging
 	log.SetFormatter(&log.JSONFormatter{})
@@ -45,9 +41,14 @@ func main() {
 	}
 
 	//Get Request
-	requestBody, err := process.GetRequest(cfg.DefaultFileName)
+	requestBody, err := request.GetRequest(cfg.DefaultFileName)
 	if err != nil {
 		log.Error(errors.Unwrap(err))
+	}
+
+	err = request.LogRequest(requestBody)
+	if err != nil {
+		log.Error(err)
 	}
 
 	//Process request
@@ -83,7 +84,7 @@ func main() {
 		}
 	}()
 
-	err = p.ReadFile(ctx)
+	err = p.ReadFile(ctx, os.Stdout)
 	if err != nil {
 		log.Error(errors.Unwrap(err))
 	}

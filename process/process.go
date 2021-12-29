@@ -11,7 +11,7 @@ import (
 )
 
 type ProcessFile interface {
-	ReadFile(ctx context.Context) error
+	ReadFile(ctx context.Context, w io.Writer) error
 }
 
 type ProcessRequest interface {
@@ -20,7 +20,7 @@ type ProcessRequest interface {
 
 type Processer interface {
 	ParseRequest(request string, defaultFile string) error
-	ReadFile(ctx context.Context) error
+	ReadFile(ctx context.Context, w io.Writer) error
 }
 
 type Request struct {
@@ -32,7 +32,7 @@ type Request struct {
 	SearchValue     []string
 }
 
-func (r *Request) ReadFile(ctx context.Context) error {
+func (r *Request) ReadFile(ctx context.Context, w io.Writer) error {
 	file, err := os.Open(r.FileName)
 	if err != nil {
 		return err
@@ -53,7 +53,8 @@ func (r *Request) ReadFile(ctx context.Context) error {
 		default:
 			rec, err := csvReader.Read()
 			if err == io.EOF {
-				break
+				log.Info(err)
+				return nil
 			}
 			if err != nil {
 				return err
@@ -89,8 +90,8 @@ func (r *Request) ReadFile(ctx context.Context) error {
 					for _, v := range indexCol {
 						sliceToPrint = append(sliceToPrint, rec[v])
 					}
-					for i, v := range indexParam {
-						stringToAdd, err := processSearchParam(r.SearchParam[i], indexParam, rec, v, i, r.SearchValue)
+					for i := range indexParam {
+						stringToAdd, err := processSearchParam(r.SearchParam[i], indexParam, rec, i, r.SearchValue)
 						if err != nil {
 							return err
 						}
@@ -100,7 +101,7 @@ func (r *Request) ReadFile(ctx context.Context) error {
 					}
 
 					if len(sliceToPrint) == (len(indexCol) + len(indexParam)) {
-						fmt.Fprintln(os.Stdout, sliceToPrint)
+						fmt.Fprintln(w, sliceToPrint)
 					}
 				}
 				header = false
