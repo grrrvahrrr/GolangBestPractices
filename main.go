@@ -16,8 +16,10 @@ import (
 )
 
 func main() {
+	//Request example
 	//SELECT SNo, Province/State FROM /home/deus/Documents/testData/covid_19_data.csv WHERE Country/Region = "Mainland China" AND Confirmed > 100 AND Deaths < 50 AND Recovered > 20
 
+	//ToDo
 	//parse seach parameter name that has several words in it
 	//solve parsing problem with SELECT FROM WHERE in parameter names
 

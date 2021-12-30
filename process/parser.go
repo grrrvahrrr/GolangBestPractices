@@ -41,14 +41,6 @@ func (r *Request) ParseRequest(request string, defaultFile string) error {
 				r.SearchParam = append(r.SearchParam, r.SearchBody[i+2])
 			}
 		}
-		//Parse Single word Seach value
-		// r.SearchValue = append(r.SearchValue, r.SearchBody[2])
-		// for i, v := range r.SearchBody {
-		// 	if v == "AND" {
-		// 		r.SearchValue = append(r.SearchValue, r.SearchBody[i+3])
-		// 	}
-		// }
-		//Parse multiword search value
 		var err error
 		r.SearchValue, err = parseSearchValue(r.SearchBody, r.SearchParam)
 		if err != nil {
