@@ -1,6 +1,6 @@
 .PHONY: lint
 lint:
-	/home/deus/.go/bin/golangci-lint run
+	golangci-lint run
 
 .PHONY: test
 test:
