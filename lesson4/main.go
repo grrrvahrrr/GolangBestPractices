@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//I made this comment to test GitHub Actions! I am tired...
+//I made this comment to test GitHub Actions! I am tired... AGAIN!
 
 func main() {
 	var df process.ProcessAll = &process.DirFiles{}
